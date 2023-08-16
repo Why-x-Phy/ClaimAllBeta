@@ -19,6 +19,8 @@ import NFTCard from "../components/NFTCardSeason3";
 import {
   nftDropSeason3,
   stakingSeason3,
+  stakingSeason2,
+  stakingSeason1,
   tokenContractAddress,
 } from "../consts/contractAddresses";
 
@@ -56,6 +58,24 @@ const Home: NextPage = () => {
   
       loadClaimableRewards();
     }, [address, contract]);
+
+    const stakingSeason1Contract = useContract(stakingSeason1).contract;
+    const stakingSeason2Contract = useContract(stakingSeason2).contract;
+    const stakingSeason3Contract = useContract(stakingSeason3).contract;
+
+    async function claimAllRewards() {
+      if (stakingSeason1Contract && stakingSeason2Contract && stakingSeason3Contract) {
+        // Call the claimRewards method for Season 1
+        await stakingSeason1Contract.call("claimRewards");
+    
+        // Call the claimRewards method for Season 2
+        await stakingSeason2Contract.call("claimRewards");
+    
+        // Call the claimRewards method for Season 3
+        await stakingSeason3Contract.call("claimRewards");
+      }
+    }
+    
   
 
   async function stakeNfts(ids: string[]) {
@@ -86,6 +106,8 @@ if (isLoading) {
     await contract?.call("withdraw", [ids]);
     setSelectedNftsToWithdraw([]);
   }
+
+  
 
 
     return (
@@ -198,6 +220,18 @@ if (isLoading) {
             >
               Claim Rewards
             </Web3Button>
+
+            <hr className={`${styles.divider} ${styles.spacerTop}`} />
+
+                        {/* Mint All Season`s Button */}
+            <Web3Button
+              className={styles.wallet}
+              contractAddress={stakingSeason3} // Verwenden Sie die Vertragsadresse von Season 3
+              action={claimAllRewards}
+            >
+              Claim Season 1-3 Rewards
+            </Web3Button>
+            
   
             <hr className={`${styles.divider} ${styles.spacerTop}`} />
           <h2>Your Staked NFTs</h2>
