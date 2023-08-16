@@ -64,16 +64,25 @@ const Home: NextPage = () => {
     const stakingSeason3Contract = useContract(stakingSeason3).contract;
 
     async function claimAllRewards() {
-      if (stakingSeason1Contract && stakingSeason2Contract && stakingSeason3Contract) {
-        // Call the claimRewards method for Season 1
-        await stakingSeason1Contract.call("claimRewards");
+      const claimPromises = [];
     
-        // Call the claimRewards method for Season 2
-        await stakingSeason2Contract.call("claimRewards");
-    
-        // Call the claimRewards method for Season 3
-        await stakingSeason3Contract.call("claimRewards");
+      if (stakingSeason1Contract) {
+        // Add promise to claim rewards for Season 1
+        claimPromises.push(stakingSeason1Contract.call("claimRewards"));
       }
+    
+      if (stakingSeason2Contract) {
+        // Add promise to claim rewards for Season 2
+        claimPromises.push(stakingSeason2Contract.call("claimRewards"));
+      }
+    
+      if (stakingSeason3Contract) {
+        // Add promise to claim rewards for Season 3
+        claimPromises.push(stakingSeason3Contract.call("claimRewards"));
+      }
+    
+      // Wait for all claim promises to resolve
+      await Promise.all(claimPromises);
     }
     
   
